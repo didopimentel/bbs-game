@@ -63,7 +63,7 @@ func main() {
 	r.HandleFunc("/api/v1/items/{id}", itemAPI.Get).Methods("GET")
 	r.HandleFunc("/api/v1/players", playerAPI.Create).Methods("POST")
 	r.HandleFunc("/api/v1/players/me", playerAPI.GetPlayerByToken).Methods("GET")
-	r.HandleFunc("/api/v1/players/{id:[0-9]+}", playerAPI.Get).Methods("GET")
+	r.HandleFunc("/api/v1/players/{id}", playerAPI.Get).Methods("GET")
 	r.HandleFunc("/api/v1/creatures", creatureAPI.Create).Methods("POST")
 	r.HandleFunc("/api/v1/creatures/{id}", creatureAPI.Get).Methods("GET")
 

@@ -31,7 +31,7 @@ func (s *Service) Create(player entities.Player) (entities.Player, error) {
 
 func (s *Service) Get(id string) (entities.Player, error) {
     player := entities.Player{}
-    tx := s.db.First(&player, id)
+    tx := s.db.Take(&player, "id = ?", id)
 
     if tx.Error != nil {
         return entities.Player{}, tx.Error

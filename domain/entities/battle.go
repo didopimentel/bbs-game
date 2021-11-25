@@ -1,7 +1,7 @@
 package entities
 
 type Battle struct {
-    ID string
+    Base
     Finished bool
     BattleParticipants []BattleParticipant
 }
@@ -29,7 +29,7 @@ const (
 )
 
 type BattleParticipant struct {
-    ID string
+    Base
     BattleID string
     ParticipantType BattleParticipantType
     ParticipantID string

@@ -54,7 +54,7 @@ func (s *Service) Create(input CreateInput) (CreateOutput, error) {
     battle := entities.Battle{}
     err := s.db.Transaction(func(tx *gorm.DB) error {
         var creature entities.Creature
-        tx = s.db.Table("creatures").First(&creature, creatureID)
+        tx = s.db.Table("creatures").First(&creature, "id = ?", creatureID)
         if tx.Error != nil {
             return tx.Error
         }
@@ -95,6 +95,8 @@ type CreateActionInput struct {
     TargetID string
     ActionType entities.BattleActionType
 }
+
+//TODO: delete
 func (s *Service) CreateAction(input CreateActionInput) (entities.BattleAction, error) {
     var battle entities.Battle
     tx := s.db.First(&battle, input.BattleID)
@@ -204,7 +206,7 @@ func (s *Service) GenerateNextRound(input GenerateNextRoundInput) (GenerateNextR
     playerDied, creatureDied, gainedLevel := false, false, false
     var gainedExperience int64
     var battle entities.Battle
-    tx := s.db.Preload(clause.Associations).Table("battles").First(&battle, input.BattleID)
+    tx := s.db.Preload(clause.Associations).Table("battles").First(&battle, "id = ?", input.BattleID)
     if tx.Error != nil {
         return GenerateNextRoundOutput{}, tx.Error
     }
@@ -220,7 +222,7 @@ func (s *Service) GenerateNextRound(input GenerateNextRoundInput) (GenerateNextR
     for _, bp := range battle.BattleParticipants {
         switch bp.ParticipantType {
         case entities.BattleParticipantTypePlayer:
-            tx = s.db.Table("players").First(&player, bp.ParticipantID)
+            tx = s.db.Table("players").First(&player, "id = ?", bp.ParticipantID)
             if tx.Error != nil {
                 return GenerateNextRoundOutput{}, tx.Error
             }
@@ -230,7 +232,7 @@ func (s *Service) GenerateNextRound(input GenerateNextRoundInput) (GenerateNextR
             }
             playerParticipant = bp
         case entities.BattleParticipantTypeCreature:
-            tx = s.db.Table("battle_creatures").First(&creature, bp.ParticipantID)
+            tx = s.db.Table("battle_creatures").First(&creature, "id = ?", bp.ParticipantID)
             if tx.Error != nil {
                 return GenerateNextRoundOutput{}, tx.Error
             }
@@ -268,12 +270,12 @@ func (s *Service) GenerateNextRound(input GenerateNextRoundInput) (GenerateNextR
 
         actions = append(actions, log1, log2)
 
-        if player.HP == 0 {
+        if player.HP <= 0 {
             playerDied = true
             return nil
         }
 
-        if creature.HP == 0 {
+        if creature.HP <= 0 {
             gainedExperience = creature.Experience
             creatureDied = true
 
@@ -343,7 +345,7 @@ func getDiceDamage(d string) (int, int, int, error) {
         return 0, 0, 0, err
     }
     splitted2 := strings.Split(splitted1[1], "+")
-    diceSize, err := strconv.Atoi(splitted1[0])
+    diceSize, err := strconv.Atoi(splitted2[0])
     if err != nil {
         return 0, 0, 0, err
     }
@@ -351,7 +353,7 @@ func getDiceDamage(d string) (int, int, int, error) {
         return diceCount, diceSize, 0, nil
     }
 
-    additionalDamage, err := strconv.Atoi(splitted1[1])
+    additionalDamage, err := strconv.Atoi(splitted2[1])
     if err != nil {
         return 0, 0, 0, err
     }
@@ -361,7 +363,7 @@ func getDiceDamage(d string) (int, int, int, error) {
 
 func (s *Service) Get(id string) (entities.Battle, error) {
     battle := entities.Battle{}
-    tx := s.db.First(&battle, id)
+    tx := s.db.First(&battle, "id = ?", id)
 
     if tx.Error != nil {
         return entities.Battle{}, tx.Error

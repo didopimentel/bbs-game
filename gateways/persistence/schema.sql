@@ -34,8 +34,8 @@ CREATE TABLE public.accounts (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     password text NOT NULL,
     email text NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now()
 );
 
 CREATE TABLE public.battle_actions (
@@ -53,6 +53,8 @@ CREATE TABLE public.battle_creatures (
     experience integer DEFAULT 0 NOT NULL,
     damage text NOT NULL,
     hp integer DEFAULT 1 NOT NULL,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now(),
     CONSTRAINT battle_creatures_name_check CHECK ((name <> ''::text))
 );
 
@@ -60,12 +62,16 @@ CREATE TABLE public.battle_participants (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     battle_id uuid NOT NULL,
     participant_type public.battle_participant_type,
-    participant_id uuid
+    participant_id uuid,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now()
 );
 
 CREATE TABLE public.battles (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    finished boolean DEFAULT false
+    finished boolean DEFAULT false,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now()
 );
 
 CREATE TABLE public.creatures (
@@ -75,6 +81,8 @@ CREATE TABLE public.creatures (
     experience integer DEFAULT 0 NOT NULL,
     damage text NOT NULL,
     hp integer DEFAULT 1 NOT NULL,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now(),
     CONSTRAINT creatures_name_check CHECK ((name <> ''::text))
 );
 
@@ -122,8 +130,8 @@ CREATE TABLE public.players (
     hp integer DEFAULT 1 NOT NULL,
     total_hp integer DEFAULT 1 NOT NULL,
     account_id uuid NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now(),
     CONSTRAINT players_name_check CHECK ((name <> ''::text))
 );
 

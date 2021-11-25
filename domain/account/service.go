@@ -3,7 +3,6 @@ package account
 import (
     "bbs-game/domain/entities"
     "github.com/dgrijalva/jwt-go"
-    "github.com/gofrs/uuid"
     "golang.org/x/crypto/bcrypt"
     "gorm.io/gorm"
     "time"
@@ -38,24 +37,15 @@ func (s *Service) Create(input CreateInput) (CreateOutput, error) {
         return CreateOutput{}, err
     }
 
-    accountUUID, err := uuid.NewV4()
-    if err != nil {
-        return CreateOutput{}, err
-    }
     account := entities.Account{
-        ID: accountUUID.String(),
         Email: input.Email,
         Password: string(bytes),
     }
 
-    playerUUID, err := uuid.NewV4()
-    if err != nil {
-        return CreateOutput{}, err
-    }
     player := entities.Player{
-        ID: playerUUID.String(),
         Name:       input.PlayerName,
         Level:      1,
+        Damage: "1d6+5",
         Experience: 0,
         HP:         100,
         TotalHP:    100,

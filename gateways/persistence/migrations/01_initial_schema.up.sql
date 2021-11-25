@@ -4,8 +4,8 @@ CREATE TABLE accounts (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     password text NOT NULL,
     email text NOT NULL,
-    created_at timestamp,
-    updated_at timestamp
+    created_at timestamp default now(),
+    updated_at timestamp default now() 
 );
 
 CREATE TYPE damage_type AS ENUM (
@@ -22,8 +22,8 @@ CREATE TABLE players (
     hp int DEFAULT 1 NOT NULL,
     total_hp int DEFAULT 1 NOT NULL,
     account_id uuid NOT NULL REFERENCES accounts (id) ON DELETE CASCADE,
-    created_at timestamp,
-    updated_at timestamp
+    created_at timestamp default now(),
+    updated_at timestamp default now()
     CHECK (name <> '')
 );
 
@@ -57,6 +57,8 @@ CREATE TABLE creatures (
     experience int DEFAULT 0 NOT NULL,
     damage text NOT NULL,
     hp int DEFAULT 1 NOT NULL,
+    created_at timestamp default now(),
+    updated_at timestamp default now(),
     CHECK (name <> '')
 );
 
@@ -67,6 +69,8 @@ CREATE TABLE battle_creatures (
    experience int DEFAULT 0 NOT NULL,
    damage text NOT NULL,
    hp int DEFAULT 1 NOT NULL,
+   created_at timestamp default now(),
+   updated_at timestamp default now()
    CHECK (name <> '')
 );
 
@@ -98,14 +102,18 @@ CREATE TYPE battle_participant_type AS ENUM (
 
 CREATE TABLE battles (
      id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-     finished boolean DEFAULT FALSE
+     finished boolean DEFAULT FALSE,
+     created_at timestamp default now(),
+     updated_at timestamp default now()
 );
 
 CREATE TABLE battle_participants (
      id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
      battle_id uuid NOT NULL REFERENCES battles (id) ON DELETE CASCADE,
      participant_type battle_participant_type,
-     participant_id uuid
+     participant_id uuid,
+     created_at timestamp default now(),
+     updated_at timestamp default now()
 );
 
 

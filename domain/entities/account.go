@@ -1,13 +1,7 @@
 package entities
 
-import (
-    "time"
-)
-
 type Account struct {
-    ID string
-    CreatedAt time.Time
-    UpdatedAt time.Time
+    Base
     Email string
     Password string
 }
